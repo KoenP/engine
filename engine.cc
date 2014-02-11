@@ -8,6 +8,12 @@
 #include <string>
 #include <vector>
 
+std::vector<int> color_doubletuple_to_inttuple(const std::vector<double> doublecolor) {
+    std::vector<int> intcolor(3);
+    for (int i = 0; i < 3; i++) intcolor[i] = (int) (doublecolor[i] * 255.0);
+    return intcolor;
+}
+
 img::EasyImage generate_image(const ini::Configuration &configuration)
 {
 	std::string type = configuration["General"]["type"].as_string_or_die();
@@ -24,7 +30,7 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 		std::vector<double> colorwhite = configuration["BlockProperties"]["colorWhite"].as_double_tuple_or_die();
 		std::vector<double> colorblack = configuration["BlockProperties"]["colorBlack"].as_double_tuple_or_die();
 		bool invertcolors = configuration["BlockProperties"]["invertColors"].as_bool_or_die();
-		blocks(generatedimg, width, height, nx, ny, colorwhite, colorblack, invertcolors);
+		blocks(generatedimg, width, height, nx, ny, color_doubletuple_to_inttuple(colorwhite), color_doubletuple_to_inttuple(colorblack), invertcolors);
 	}
 		
 	return generatedimg;
