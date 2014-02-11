@@ -1,10 +1,12 @@
 #include "EasyImage.h"
 #include "ini_configuration.hh"
 #include "opdrachten/o1.cpp"
+#include "opdrachten/o2.cpp"
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 img::EasyImage generate_image(const ini::Configuration &configuration)
 {
@@ -14,9 +16,17 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 	//width = 256; height=256;
 	img::EasyImage generatedimg = img::EasyImage(width, height);
 	
-	if (type == "IntroColorRectangle")
+	if (type == "IntroColorRectangle") {
 		color_rectangle(generatedimg, width, height);
-
+	} else if (type == "IntroBlocks") {
+		int nx = configuration["BlockProperties"]["nrXBlocks"].as_int_or_die();
+		int ny = configuration["BlockProperties"]["nrYBlocks"].as_int_or_die();
+		std::vector<double> colorwhite = configuration["BlockProperties"]["colorWhite"].as_double_tuple_or_die();
+		std::vector<double> colorblack = configuration["BlockProperties"]["colorBlack"].as_double_tuple_or_die();
+		bool invertcolors = configuration["BlockProperties"]["invertColors"].as_bool_or_die();
+		blocks(generatedimg, width, height, nx, ny, colorwhite, colorblack, invertcolors);
+	}
+		
 	return generatedimg;
 }
 
