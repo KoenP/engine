@@ -1,5 +1,6 @@
 #include "EasyImage.h"
 #include "ini_configuration.hh"
+#include "opdrachten/o1.cpp"
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
@@ -7,21 +8,15 @@
 
 img::EasyImage generate_image(const ini::Configuration &configuration)
 {
-	
+	std::string type = configuration["General"]["type"].as_string_or_die();
 	int width = configuration["ImageProperties"]["width"].as_int_or_die(); 
 	int height = configuration["ImageProperties"]["height"].as_int_or_die(); 
 	//width = 256; height=256;
 	img::EasyImage generatedimg = img::EasyImage(width, height);
+	
+	if (type == "IntroColorRectangle")
+		color_rectangle(generatedimg, width, height);
 
-	for (int x = 0; x < width; x++)
-	{
-		for (int y = 0; y < height; y++)
-		{
-			generatedimg(x, y).red = 256 * x / width;
-			generatedimg(x, y).green = 256 * y / height; 
-			generatedimg(x, y).blue = (x+y) * 256 / ((width+height)/2);
-		}
-	}
 	return generatedimg;
 }
 
