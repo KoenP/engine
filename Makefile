@@ -1,4 +1,4 @@
-CXXFLAGS   = -Wall -Wextra -g -fstack-protector-all
+CXXFLAGS   = -Wextra -g -fstack-protector-all
 LDFLAGS    =
 EXECUTABLE = engine
 EXTENSION  = cc

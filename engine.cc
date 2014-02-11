@@ -7,7 +7,22 @@
 
 img::EasyImage generate_image(const ini::Configuration &configuration)
 {
-	return img::EasyImage();
+	
+	int width = configuration["ImageProperties"]["width"].as_int_or_die(); 
+	int height = configuration["ImageProperties"]["height"].as_int_or_die(); 
+	//width = 256; height=256;
+	img::EasyImage generatedimg = img::EasyImage(width, height);
+
+	for (int x = 0; x < width; x++)
+	{
+		for (int y = 0; y < height; y++)
+		{
+			generatedimg(x, y).red = 256 * x / width;
+			generatedimg(x, y).green = 256 * y / height; 
+			generatedimg(x, y).blue = (x+y) * 256 / ((width+height)/2);
+		}
+	}
+	return generatedimg;
 }
 
 int main(int argc, char const* argv[])
