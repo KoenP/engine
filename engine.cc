@@ -2,11 +2,13 @@
 #include "ini_configuration.hh"
 #include "opdrachten/o1.cpp"
 #include "opdrachten/o2.cpp"
+#include "opdrachten/o3.cpp"
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
 #include <string>
 #include <vector>
+
 
 std::vector<int> color_doubletuple_to_inttuple(const std::vector<double> doublecolor) {
     std::vector<int> intcolor(3);
@@ -14,12 +16,16 @@ std::vector<int> color_doubletuple_to_inttuple(const std::vector<double> doublec
     return intcolor;
 }
 
+img::Color color_doubletuple_to_colorobj(const std::vector<double> doublecolor) {
+	std::vector<int> intcolor = color_doubletuple_to_inttuple(doublecolor);
+	return img::Color(intcolor[0], intcolor[1], intcolor[2]);
+}
+
 img::EasyImage generate_image(const ini::Configuration &configuration)
 {
 	std::string type = configuration["General"]["type"].as_string_or_die();
 	int width = configuration["ImageProperties"]["width"].as_int_or_die(); 
 	int height = configuration["ImageProperties"]["height"].as_int_or_die(); 
-	//width = 256; height=256;
 	img::EasyImage generatedimg = img::EasyImage(width, height);
 	
 	if (type == "IntroColorRectangle") {
@@ -31,6 +37,13 @@ img::EasyImage generate_image(const ini::Configuration &configuration)
 		std::vector<double> colorblack = configuration["BlockProperties"]["colorBlack"].as_double_tuple_or_die();
 		bool invertcolors = configuration["BlockProperties"]["invertColors"].as_bool_or_die();
 		blocks(generatedimg, width, height, nx, ny, color_doubletuple_to_inttuple(colorwhite), color_doubletuple_to_inttuple(colorblack), invertcolors);
+	} else if (type == "IntroLines") {
+		std::string figure = configuration["LineProperties"]["figure"].as_string_or_die();
+		if (figure == "QuarterCircle") {
+			std::vector<double> linecolor = configuration["LineProperties"]["lineColor"].as_double_tuple_or_die();
+			int nlines = configuration["LineProperties"]["nrLines"].as_int_or_die();
+			quartercircle(generatedimg, width, height, nlines, color_doubletuple_to_colorobj(linecolor));
+		}
 	}
 		
 	return generatedimg;
